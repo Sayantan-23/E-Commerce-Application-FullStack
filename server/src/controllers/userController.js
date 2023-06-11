@@ -138,23 +138,22 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
 
 // Get User Detail
 export const getUserDetail = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.user.id)
+  const user = await User.findById(req.user.id);
 
-  if (!user) return next(new ErrorHandler("User not found", 400))
+  if (!user) return next(new ErrorHandler("User not found", 400));
 
   res.status(200).json({
     success: true,
-    user
-  })
-})
+    user,
+  });
+});
 
 // Update Password
 export const updatePassword = catchAsyncError(async (req, res, next) => {
-  
-  const user = await User.findById(req.user.id).select("+password")
+  const user = await User.findById(req.user.id).select("+password");
 
-  const {oldPassword, newPassword, confirmPassword} = req.body
-  
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+
   const isPasswordMatched = await user.comparePassword(oldPassword);
 
   if (!isPasswordMatched) {
@@ -165,9 +164,31 @@ export const updatePassword = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Password does not match", 404));
   }
 
-  user.password = newPassword
+  user.password = newPassword;
 
-  await user.save()
+  await user.save();
 
-  sendToken(user, 200, res)
-})
+  sendToken(user, 200, res);
+});
+
+// Update Profile
+export const updateUserProfile = catchAsyncError(async (req, res, next) => {
+  const { name, email } = req.body;
+
+  // if (!name|| !email) return next(new ErrorHandler("Please fill all the fields", 400))
+
+  const newUserData = {
+    name,
+    email,
+  };
+
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
