@@ -227,7 +227,7 @@ export const updateUserRole = catchAsyncError(async (req, res, next) => {
   const newUserData = {
     name,
     email,
-    role
+    role,
   };
 
   const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
@@ -243,11 +243,14 @@ export const updateUserRole = catchAsyncError(async (req, res, next) => {
 
 // Delete User --ADMIN
 export const deleteUser = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.params.id)
+  const user = await User.findById(req.params.id);
 
-  if (!user) return next(new ErrorHandler(`User does not exists with id: ${req.params.id}`))
-  
-  await user.deleteOne()
+  if (!user)
+    return next(
+      new ErrorHandler(`User does not exists with id: ${req.params.id}`)
+    );
+
+  await user.deleteOne();
 
   res.status(200).json({
     success: true,

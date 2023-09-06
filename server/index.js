@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 import "dotenv/config";
 
 // Handling Uncaught Exception
-process.on("uncaughtException", err => {
+process.on("uncaughtException", (err) => {
   console.log(`Error: ${err.message}`);
   console.log("Shutting down the server due to Uncaught Exception");
 
-  process.exit(1)
-})
+  process.exit(1);
+});
 
 const port = process.env.PORT || 4000;
 
